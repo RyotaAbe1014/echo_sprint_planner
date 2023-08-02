@@ -17,6 +17,9 @@ services:
     environment:
       DB_HOST: db
     tty: true
+    networks:
+      - echo_network
+
   db:
     image: postgres:13
     environment:
@@ -25,3 +28,9 @@ services:
       POSTGRES_DB: database
     ports:
       - 5432:5432
+    networks:
+      - echo_network
+
+networks:
+  echo_network:
+    driver: bridge
