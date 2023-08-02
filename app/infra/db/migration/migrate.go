@@ -13,5 +13,5 @@ func main() {
 	// マイグレーションを実行する
 	// 第二引数にマイグレーションしたいテーブルを渡すことができる
 	// 順番に注意すること(外部キー制約など)
-	dbConn.AutoMigrate(&model.User{})
+	dbConn.AutoMigrate(&model.User{}, &model.Sprint{})
 }
