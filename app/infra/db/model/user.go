@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	Id       int64     `gorm:"primary_key;AUTO_INCREMENT"`
+	ID       int64     `gorm:"primary_key;AUTO_INCREMENT"`
 	Name     string    `gorm:"type:varchar(100);"`
 	Email    string    `gorm:"type:varchar(100);"`
 	CreateAt time.Time `gorm:"autoCreateTime"`

@@ -13,3 +13,14 @@ type Sprint struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	UpdatedBy *string   `gorm:"size:255"`
 }
+
+type ProductBacklog struct {
+	ID        int64     `gorm:"primaryKey;autoIncrement"`
+	Title     *string   `gorm:"size:255"`
+	Progress  int64     `gorm:"type:smallint"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	UpdatedBy *string   `gorm:"size:255"`
+	SprintId  *int64    `gorm:"index"`
+	Sprint    *Sprint   `gorm:"foreignKey:SprintID"`
+}
