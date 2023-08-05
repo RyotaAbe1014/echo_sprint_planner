@@ -28,3 +28,8 @@ $ docker-compose exec web bash
 ```shell
 $ GO_ENV=dev go run infra/db/migration/migrate.go
 ```
+
+## web server
+```shell
+$ GO_ENV=dev go run main.go
+```

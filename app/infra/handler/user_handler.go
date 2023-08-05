@@ -10,6 +10,7 @@ import (
 type UserCreateRequest struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
+	Password string `json:"password"`
 	IsActive bool   `json:"is_active"`
 }
 type ErrorResponse struct {
@@ -35,7 +36,7 @@ func (uh *userHandler) UserCreate(c echo.Context) error {
 	if err := c.Bind(req); err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{Message: "Invalid request format"})
 	}
-	err := uh.us.UserCreate(req.Name, req.Email, req.IsActive)
+	err := uh.us.UserCreate(req.Name, req.Email, req.IsActive, req.Password)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
