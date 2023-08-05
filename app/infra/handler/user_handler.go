@@ -7,6 +7,15 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type UserCreateRequest struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	IsActive bool   `json:"is_active"`
+}
+type ErrorResponse struct {
+	Message string `json:"message"`
+}
+
 type IUserHandler interface {
 	UserCreate(c echo.Context) error
 }
@@ -22,7 +31,11 @@ func NewUserHandler(us services.IUserService) IUserHandler {
 
 // UserCreate is a function to create a user
 func (uh *userHandler) UserCreate(c echo.Context) error {
-	err := uh.us.UserCreate()
+	req := new(UserCreateRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, ErrorResponse{Message: "Invalid request format"})
+	}
+	err := uh.us.UserCreate(req.Name, req.Email, req.IsActive)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

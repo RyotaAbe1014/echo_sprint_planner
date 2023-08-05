@@ -1,21 +1,19 @@
 package router
 
 import (
+	"echo_sprint_planner/app/infra/handler"
 	"echo_sprint_planner/app/infra/middleware"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-func New() *echo.Echo {
+func NewRouter(uh handler.IUserHandler) *echo.Echo {
 	e := echo.New()
-
+	// middleware
 	middleware.Middleware(e)
-	e.GET("/", articleIndex)
+
+	// user
+	e.POST("/user", uh.UserCreate)
 
 	return e
-}
-
-func articleIndex(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
 }
