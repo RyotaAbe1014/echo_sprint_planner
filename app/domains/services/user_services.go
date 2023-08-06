@@ -29,7 +29,7 @@ func (us *userService) UserCreate(name string, email string, isActive bool, pass
 		IsActive: isActive,
 		Password: password, // この時点ではハッシュ化されていない
 	}
-	if err := models.ValidateUser(user); err != nil {
+	if err := user.Validate(); err != nil {
 		return err
 	}
 

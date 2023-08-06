@@ -16,11 +16,11 @@ type User struct {
 	UpdateAt *time.Time
 }
 
-func ValidateUser(user *User) error {
-	return validation.ValidateStruct(user,
-		validation.Field(&user.Name, validation.Required, validation.Length(3, 50)),
-		validation.Field(&user.Email, validation.Required, is.Email),
-		validation.Field(&user.Password, validation.Required, validation.Length(6, 50)),
-		validation.Field(&user.IsActive, validation.Required),
+func (u *User) Validate() error {
+	return validation.ValidateStruct(u,
+		validation.Field(&u.Name, validation.Required, validation.Length(3, 50)),
+		validation.Field(&u.Email, validation.Required, is.Email),
+		validation.Field(&u.Password, validation.Required, validation.Length(6, 50)),
+		validation.Field(&u.IsActive, validation.Required),
 	)
 }
