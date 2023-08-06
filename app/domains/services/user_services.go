@@ -22,16 +22,24 @@ func NewUserService(ur repositories.IUserRepository) IUserService {
 
 // func
 func (us *userService) UserCreate(name string, email string, isActive bool, password string) error {
-	password, err := hashPassword(password)
-	if err != nil {
-		return err
-	}
+	// 元のパスワードのバリデーション
 	user := &models.User{
 		Name:     name,
 		Email:    email,
 		IsActive: isActive,
-		Password: password,
+		Password: password, // この時点ではハッシュ化されていない
 	}
+	if err := models.ValidateUser(user); err != nil {
+		return err
+	}
+
+	// バリデーションがパスしたらハッシュ化
+	hashedPassword, err := hashPassword(password)
+	if err != nil {
+		return err
+	}
+	user.Password = hashedPassword
+
 	if err := us.ur.UserCreate(user); err != nil {
 		return err
 	}
