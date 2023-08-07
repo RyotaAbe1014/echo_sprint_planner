@@ -18,9 +18,9 @@ type User struct {
 
 func (u *User) Validate() error {
 	return validation.ValidateStruct(u,
-		validation.Field(&u.Name, validation.Required, validation.Length(3, 50)),
-		validation.Field(&u.Email, validation.Required, is.Email),
-		validation.Field(&u.Password, validation.Required, validation.Length(6, 50)),
+		validation.Field(&u.Name, validation.Required.Error("名前は必須です。"), validation.Length(3, 50).Error("名前は3文字以上50文字以下です。")),
+		validation.Field(&u.Email, validation.Required.Error("メールアドレスは必須です。"), is.Email.Error("メールアドレスの形式が正しくありません。")),
+		validation.Field(&u.Password, validation.Required.Error("パスワードは必須です。"), validation.Length(6, 50).Error("パスワードは6文字以上50文字以下です。")),
 		validation.Field(&u.IsActive, validation.Required),
 	)
 }
