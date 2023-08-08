@@ -19,6 +19,7 @@ type ErrorResponse struct {
 
 type IUserHandler interface {
 	UserCreate(c echo.Context) error
+	GetUserList(c echo.Context) error
 }
 
 type userHandler struct {
@@ -30,7 +31,6 @@ func NewUserHandler(us services.IUserService) IUserHandler {
 	return &userHandler{us}
 }
 
-// UserCreate is a function to create a user
 func (uh *userHandler) UserCreate(c echo.Context) error {
 	req := new(UserCreateRequest)
 	if err := c.Bind(req); err != nil {
@@ -41,4 +41,12 @@ func (uh *userHandler) UserCreate(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusOK, "success")
+}
+
+func (uh *userHandler) GetUserList(c echo.Context) error {
+	userList, err := uh.us.GetUserList()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, userList)
 }

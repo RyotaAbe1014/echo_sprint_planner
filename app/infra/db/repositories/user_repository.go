@@ -16,8 +16,16 @@ func NewUserRepository(db *gorm.DB) repositories.IUserRepository {
 }
 
 func (ur *userRepository) UserCreate(user *models.User) (err error) {
-	if err := ur.db.Select("Name", "Email", "IsActive", "Password").Create(&user).Error; err != nil {
+	if err := ur.db.Select("Name", "Email", "IsActive", "Password", "CreateAt").Create(&user).Error; err != nil {
 		return err
 	}
 	return nil
+}
+
+func (ur *userRepository) GetUserList() ([]*models.User, error) {
+	var users []*models.User
+	if err := ur.db.Select("ID", "Name", "Email", "IsActive", "CreateAt", "UpdateAt").Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
 }

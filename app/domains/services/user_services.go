@@ -3,12 +3,14 @@ package services
 import (
 	"echo_sprint_planner/app/domains/models"
 	"echo_sprint_planner/app/domains/repositories"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type IUserService interface {
 	UserCreate(name string, email string, isActive bool, password string) (nil error)
+	GetUserList() ([]*models.User, error)
 }
 
 type userService struct {
@@ -27,7 +29,7 @@ func (us *userService) UserCreate(name string, email string, isActive bool, pass
 		Name:     name,
 		Email:    email,
 		IsActive: isActive,
-		Password: password, // この時点ではハッシュ化されていない
+		Password: &password, // この時点ではハッシュ化されていない
 	}
 	if err := user.Validate(); err != nil {
 		return err
@@ -38,12 +40,18 @@ func (us *userService) UserCreate(name string, email string, isActive bool, pass
 	if err != nil {
 		return err
 	}
-	user.Password = hashedPassword
+	user.Password = &hashedPassword
+	now := time.Now()
+	user.CreateAt = &now
 
 	if err := us.ur.UserCreate(user); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (us *userService) GetUserList() ([]*models.User, error) {
+	return us.ur.GetUserList()
 }
 
 func hashPassword(password string) (string, error) {

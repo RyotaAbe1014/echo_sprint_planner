@@ -10,13 +10,13 @@ import (
 )
 
 type User struct {
-	ID       *uuid.UUID
-	Name     string
-	Email    string
-	IsActive bool
-	Password string
-	CreateAt *time.Time
-	UpdateAt *time.Time
+	ID       *uuid.UUID `json:"id"`
+	Name     string     `json:"name"`
+	Email    string     `json:"email"`
+	IsActive bool       `json:"is_active"`
+	Password *string
+	CreateAt *time.Time `json:"create_at"`
+	UpdateAt *time.Time `json:"update_at"`
 }
 
 func (u *User) Validate() error {
