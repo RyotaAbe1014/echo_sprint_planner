@@ -3,11 +3,14 @@ package models
 import (
 	"time"
 
+	"github.com/google/uuid"
+
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
 type User struct {
+	ID       *uuid.UUID
 	Name     string
 	Email    string
 	IsActive bool
