@@ -19,7 +19,7 @@ type User struct {
 	UpdateAt *time.Time `json:"update_at"`
 }
 
-func (u *User) Validate() error {
+func (u *User) CreateValidate() error {
 	return validation.ValidateStruct(u,
 		validation.Field(&u.Name, validation.Required.Error("名前は必須です。"), validation.Length(3, 50).Error("名前は3文字以上50文字以下です。")),
 		validation.Field(&u.Email, validation.Required.Error("メールアドレスは必須です。"), is.Email.Error("メールアドレスの形式が正しくありません。")),

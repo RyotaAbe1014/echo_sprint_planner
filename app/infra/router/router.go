@@ -15,6 +15,8 @@ func NewRouter(uh handler.IUserHandler) *echo.Echo {
 	// user
 	e.POST("/user", uh.UserCreate)
 	e.GET("/user_list", uh.GetUserList)
+	e.PUT("/user", uh.UserUpdate)
+	e.DELETE("/user", uh.UserDelete)
 
 	return e
 }

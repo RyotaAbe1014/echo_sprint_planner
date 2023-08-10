@@ -5,12 +5,15 @@ import (
 	"echo_sprint_planner/app/domains/repositories"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type IUserService interface {
 	UserCreate(name string, email string, isActive bool, password string) (nil error)
 	GetUserList() ([]*models.User, error)
+	UserUpdate(id uuid.UUID, name string, email string, isActive bool) (nil error)
+	UserDelete(id uuid.UUID) (nil error)
 }
 
 type userService struct {
@@ -31,7 +34,7 @@ func (us *userService) UserCreate(name string, email string, isActive bool, pass
 		IsActive: isActive,
 		Password: &password, // この時点ではハッシュ化されていない
 	}
-	if err := user.Validate(); err != nil {
+	if err := user.CreateValidate(); err != nil {
 		return err
 	}
 
@@ -52,6 +55,30 @@ func (us *userService) UserCreate(name string, email string, isActive bool, pass
 
 func (us *userService) GetUserList() ([]*models.User, error) {
 	return us.ur.GetUserList()
+}
+
+func (us *userService) UserUpdate(id uuid.UUID, name string, email string, isActive bool) error {
+	user := &models.User{
+		ID:       &id,
+		Name:     name,
+		Email:    email,
+		IsActive: isActive,
+	}
+	now := time.Now()
+	user.CreateAt = &now
+
+	if err := us.ur.UserUpdate(user); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (us *userService) UserDelete(id uuid.UUID) error {
+
+	if err := us.ur.UserDelete(id); err != nil {
+		return err
+	}
+	return nil
 }
 
 func hashPassword(password string) (string, error) {
