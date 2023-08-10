@@ -2,7 +2,7 @@ package main
 
 import (
 	db "echo_sprint_planner/app/infra/db"
-	model "echo_sprint_planner/app/infra/db/model"
+	model "echo_sprint_planner/app/infra/db/models"
 	"fmt"
 )
 
