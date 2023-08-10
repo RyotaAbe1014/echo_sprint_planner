@@ -4,6 +4,8 @@ import (
 	"echo_sprint_planner/app/domains/models"
 	"echo_sprint_planner/app/domains/repositories"
 
+	db "echo_sprint_planner/app/infra/db/models"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -17,7 +19,14 @@ func NewUserRepository(db *gorm.DB) repositories.IUserRepository {
 }
 
 func (ur *userRepository) UserCreate(user *models.User) (err error) {
-	if err := ur.db.Select("Name", "Email", "IsActive", "Password", "CreateAt").Create(&user).Error; err != nil {
+	dbUser := &db.User{
+		Name:     user.Name,
+		Email:    user.Email,
+		IsActive: user.IsActive,
+		Password: *user.Password,
+	}
+
+	if err := ur.db.Select("Name", "Email", "IsActive", "Password", "CreateAt").Create(&dbUser).Error; err != nil {
 		return err
 	}
 	return nil
@@ -25,20 +34,40 @@ func (ur *userRepository) UserCreate(user *models.User) (err error) {
 
 func (ur *userRepository) GetUserList() ([]*models.User, error) {
 	var users []*models.User
-	if err := ur.db.Select("ID", "Name", "Email", "IsActive", "CreateAt").Find(&users).Error; err != nil {
+	var dbUsers []*db.User
+	if err := ur.db.Select("ID", "Name", "Email", "IsActive", "CreateAt", "UpdateAt").Find(&dbUsers).Error; err != nil {
 		return nil, err
 	}
+
+	for _, dbUser := range dbUsers {
+		user := &models.User{
+			ID:       &dbUser.ID,
+			Name:     dbUser.Name,
+			Email:    dbUser.Email,
+			IsActive: dbUser.IsActive,
+			CreateAt: &dbUser.CreateAt,
+			UpdateAt: &dbUser.UpdateAt,
+		}
+		users = append(users, user)
+	}
+
 	return users, nil
 }
 
 func (ur *userRepository) UserUpdate(user *models.User) (err error) {
-	if err := ur.db.Select("Name", "Email", "IsActive", "UpdateAt").Updates(&user).Error; err != nil {
+	dbUser := &db.User{
+		ID:       *user.ID,
+		Name:     user.Name,
+		Email:    user.Email,
+		IsActive: user.IsActive,
+	}
+	if err := ur.db.Select("Name", "Email", "IsActive", "UpdateAt").Updates(&dbUser).Error; err != nil {
 		return err
 	}
 	return nil
 }
 func (ur *userRepository) UserDelete(id uuid.UUID) (err error) {
-	if err := ur.db.Select("ID").Delete(&models.User{}, id).Error; err != nil {
+	if err := ur.db.Select("ID").Delete(&db.User{}, id).Error; err != nil {
 		return err
 	}
 	return nil
