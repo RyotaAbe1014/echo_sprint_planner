@@ -3,6 +3,7 @@ package repositories
 import (
 	"echo_sprint_planner/app/domains/models"
 	"echo_sprint_planner/app/domains/repositories"
+	"errors"
 
 	db "echo_sprint_planner/app/infra/db/models"
 
@@ -67,8 +68,10 @@ func (ur *userRepository) UserUpdate(user *models.User) (err error) {
 	return nil
 }
 func (ur *userRepository) UserDelete(id uuid.UUID) (err error) {
-	if err := ur.db.Select("ID").Delete(&db.User{}, id).Error; err != nil {
-		return err
+	if tx := ur.db.Select("ID").Delete(&db.User{}, id); tx.Error != nil {
+		return tx.Error
+	} else if tx.RowsAffected == 0 {
+		return errors.New("record not found")
 	}
 	return nil
 }

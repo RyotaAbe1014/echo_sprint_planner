@@ -84,7 +84,7 @@ func (uh *userHandler) UserDelete(c echo.Context) error {
 	}
 	err := uh.us.UserDelete(req.ID)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 	return c.JSON(http.StatusOK, "success")
 }
