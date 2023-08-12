@@ -64,6 +64,9 @@ func (us *userService) UserUpdate(id uuid.UUID, name string, email string, isAct
 		Email:    email,
 		IsActive: isActive,
 	}
+	if err := user.UpdateValidate(); err != nil {
+		return err
+	}
 	now := time.Now()
 	user.CreateAt = &now
 

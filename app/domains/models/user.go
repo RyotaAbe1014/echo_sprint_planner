@@ -20,10 +20,36 @@ type User struct {
 }
 
 func (u *User) CreateValidate() error {
-	return validation.ValidateStruct(u,
-		validation.Field(&u.Name, validation.Required.Error("名前は必須です。"), validation.Length(3, 50).Error("名前は3文字以上50文字以下です。")),
-		validation.Field(&u.Email, validation.Required.Error("メールアドレスは必須です。"), is.Email.Error("メールアドレスの形式が正しくありません。")),
-		validation.Field(&u.Password, validation.Required.Error("パスワードは必須です。"), validation.Length(6, 50).Error("パスワードは6文字以上50文字以下です。")),
-		validation.Field(&u.IsActive, validation.Required),
-	)
+	if err := nameValidate(u.Name); err != nil {
+		return err
+	}
+	if err := emailValidate(u.Email); err != nil {
+		return err
+	}
+	if err := passwordValidate(*u.Password); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *User) UpdateValidate() error {
+	if err := nameValidate(u.Name); err != nil {
+		return err
+	}
+	if err := emailValidate(u.Email); err != nil {
+		return err
+	}
+	return nil
+}
+
+func passwordValidate(password string) error {
+	return validation.Validate(password, validation.Required.Error("パスワードは必須です。"), validation.Length(6, 50).Error("パスワードは6文字以上50文字以下です。"))
+}
+
+func nameValidate(name string) error {
+	return validation.Validate(name, validation.Required.Error("名前は必須です。"), validation.Length(3, 50).Error("名前は3文字以上50文字以下です。"))
+}
+
+func emailValidate(email string) error {
+	return validation.Validate(email, validation.Required.Error("メールアドレスは必須です。"), is.Email.Error("メールアドレスの形式が正しくありません。"))
 }
