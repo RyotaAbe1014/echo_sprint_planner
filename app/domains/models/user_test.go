@@ -174,3 +174,134 @@ func TestUser_CreateValidate(t *testing.T) {
 		})
 	}
 }
+
+func TestUser_UpdateValidate(t *testing.T) {
+	now := time.Now()
+	user_id := uuid.New()
+
+	user_name, err := utils.MakeRandomString(5)
+	// 3文字以下の名前
+	short_user_name, err := utils.MakeRandomString(2)
+	// 51文字以上の名前
+	long_user_name, err := utils.MakeRandomString(51)
+
+	email := "test@test.com"
+	// 不正なメールアドレス
+	invalid_email := "testtest.com"
+
+	password, err := utils.MakeRandomString(6)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	type fields struct {
+		ID       *uuid.UUID
+		Name     string
+		Email    string
+		IsActive bool
+		Password *string
+		CreateAt *time.Time
+		UpdateAt *time.Time
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		wantErr bool
+	}{
+		{
+			name: "正常系",
+			fields: fields{
+				ID:       &user_id,
+				Name:     user_name,
+				Email:    email,
+				IsActive: true,
+				Password: &password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: false,
+		},
+		{
+			name: "異常系:名前が空",
+			fields: fields{
+				ID:       &user_id,
+				Name:     "",
+				Email:    email,
+				IsActive: true,
+				Password: &password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "異常系:名前が3文字未満",
+			fields: fields{
+				ID:       &user_id,
+				Name:     short_user_name,
+				Email:    email,
+				IsActive: true,
+				Password: &password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "異常系:名前が51文字以上",
+			fields: fields{
+				ID:       &user_id,
+				Name:     long_user_name,
+				Email:    email,
+				IsActive: true,
+				Password: &password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "異常系:メールアドレスが空",
+			fields: fields{
+				ID:       &user_id,
+				Name:     user_name,
+				Email:    "",
+				IsActive: true,
+				Password: &password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "異常系:メールアドレスが不正",
+			fields: fields{
+				ID:       &user_id,
+				Name:     user_name,
+				Email:    invalid_email,
+				IsActive: true,
+				Password: &password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			u := &models.User{
+				ID:       tt.fields.ID,
+				Name:     tt.fields.Name,
+				Email:    tt.fields.Email,
+				IsActive: tt.fields.IsActive,
+				Password: tt.fields.Password,
+				CreateAt: tt.fields.CreateAt,
+				UpdateAt: tt.fields.UpdateAt,
+			}
+			if err := u.UpdateValidate(); (err != nil) != tt.wantErr {
+				t.Errorf("User.UpdateValidate() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
