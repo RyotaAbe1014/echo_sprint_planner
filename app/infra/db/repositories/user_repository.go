@@ -67,6 +67,7 @@ func (ur *userRepository) UserUpdate(user *models.User) (err error) {
 	}
 	return nil
 }
+
 func (ur *userRepository) UserDelete(id uuid.UUID) (err error) {
 	if tx := ur.db.Select("ID").Delete(&db.User{}, id); tx.Error != nil {
 		return tx.Error
