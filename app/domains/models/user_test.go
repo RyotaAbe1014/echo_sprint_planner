@@ -2,6 +2,7 @@ package models_test
 
 import (
 	"echo_sprint_planner/app/domains/models"
+	"echo_sprint_planner/app/utils"
 	"testing"
 	"time"
 
@@ -12,6 +13,17 @@ func TestUser_CreateValidate(t *testing.T) {
 	now := time.Now()
 	user_id := uuid.New()
 	password := "password"
+
+	// 6文字以下のパスワード
+	short_password, err := utils.MakeRandomString(5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// 51文字以上のパスワード
+	long_password, err := utils.MakeRandomString(51)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	type fields struct {
 		ID       *uuid.UUID
@@ -74,6 +86,71 @@ func TestUser_CreateValidate(t *testing.T) {
 				Email:    "test@test.com",
 				IsActive: true,
 				Password: &password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "異常系:メールアドレスが空",
+			fields: fields{
+				ID:       &user_id,
+				Name:     "test",
+				Email:    "",
+				IsActive: true,
+				Password: &password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "異常系:メールアドレスが不正",
+			fields: fields{
+				ID:       &user_id,
+				Name:     "test",
+				Email:    "testtest.com",
+				IsActive: true,
+				Password: &password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "異常系:パスワードが空",
+			fields: fields{
+				ID:       &user_id,
+				Name:     "test",
+				Email:    "test@test.com",
+				IsActive: true,
+				Password: nil,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "異常系:パスワードが6文字未満",
+			fields: fields{
+				ID:       &user_id,
+				Name:     "test",
+				Email:    "test@test.com",
+				IsActive: true,
+				Password: &short_password,
+				CreateAt: &now,
+				UpdateAt: &now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "異常系:パスワードが51文字以上",
+			fields: fields{
+				ID:       &user_id,
+				Name:     "test",
+				Email:    "test@test.com",
+				IsActive: true,
+				Password: &long_password,
 				CreateAt: &now,
 				UpdateAt: &now,
 			},

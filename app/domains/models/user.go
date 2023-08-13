@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -26,7 +27,7 @@ func (u *User) CreateValidate() error {
 	if err := emailValidate(u.Email); err != nil {
 		return err
 	}
-	if err := passwordValidate(*u.Password); err != nil {
+	if err := passwordValidate(u.Password); err != nil {
 		return err
 	}
 	return nil
@@ -42,8 +43,11 @@ func (u *User) UpdateValidate() error {
 	return nil
 }
 
-func passwordValidate(password string) error {
-	return validation.Validate(password, validation.Required.Error("パスワードは必須です。"), validation.Length(6, 50).Error("パスワードは6文字以上50文字以下です。"))
+func passwordValidate(password *string) error {
+	if password == nil {
+		return errors.New("パスワードは必須です。")
+	}
+	return validation.Validate(*password, validation.Required.Error("パスワードは必須です。"), validation.Length(6, 50).Error("パスワードは6文字以上50文字以下です。"))
 }
 
 func nameValidate(name string) error {
