@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func NewRouter(uh handler.IUserHandler) *echo.Echo {
+func NewRouter(uh handler.IUserHandler, sh handler.ISprintHandler) *echo.Echo {
 	e := echo.New()
 	// middleware
 	middleware.Middleware(e)
@@ -17,6 +17,10 @@ func NewRouter(uh handler.IUserHandler) *echo.Echo {
 	e.GET("/user_list", uh.GetUserList)
 	e.PUT("/user", uh.UserUpdate)
 	e.DELETE("/user", uh.UserDelete)
+
+	// sprint
+	e.POST("/sprint", sh.SprintCreate)
+	e.GET("/sprint_list", sh.SprintList)
 
 	return e
 }

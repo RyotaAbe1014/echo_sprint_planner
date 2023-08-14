@@ -25,10 +25,6 @@ type UserDeleteRequest struct {
 	ID uuid.UUID `json:"id"`
 }
 
-type ErrorResponse struct {
-	Message string `json:"message"`
-}
-
 type IUserHandler interface {
 	UserCreate(c echo.Context) error
 	GetUserList(c echo.Context) error
