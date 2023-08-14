@@ -6,5 +6,5 @@ import (
 
 type ISprintRepository interface {
 	SprintCreate(sprint *models.Sprint) (err error)
-	SprintList() (sprints []models.Sprint, err error)
+	SprintList() (sprints []*models.Sprint, err error)
 }

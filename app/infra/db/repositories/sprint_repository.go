@@ -31,6 +31,19 @@ func (sr *sprintRepository) SprintCreate(sprint *models.Sprint) (err error) {
 	return nil
 }
 
-func (sr *sprintRepository) SprintList() (sprints []models.Sprint, err error) {
-	return nil, nil
+func (sr *sprintRepository) SprintList() (sprints []*models.Sprint, err error) {
+	dbSprints := []db.Sprint{}
+	if err := sr.db.Select("ID", "Name", "StartDate", "EndDate", "CreatedAt", "UpdatedAt", "UpdatedBy").Find(&dbSprints).Error; err != nil {
+		return nil, err
+	}
+
+	for _, dbSprint := range dbSprints {
+		sprints = append(sprints, &models.Sprint{
+			Name:      dbSprint.Name,
+			StartDate: dbSprint.StartDate,
+			EndDate:   dbSprint.EndDate,
+			UpdatedBy: dbSprint.UpdatedBy,
+		})
+	}
+	return sprints, nil
 }

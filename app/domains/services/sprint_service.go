@@ -8,6 +8,7 @@ import (
 
 type ISprintService interface {
 	SprintCreate(name string, startDate time.Time, endDate time.Time, updatedBy string) (err error)
+	SprintList() ([]*models.Sprint, error)
 }
 
 type sprintService struct {
@@ -31,4 +32,8 @@ func (us *sprintService) SprintCreate(name string, startDate time.Time, endDate 
 		return err
 	}
 	return nil
+}
+
+func (us *sprintService) SprintList() ([]*models.Sprint, error) {
+	return us.ur.SprintList()
 }
