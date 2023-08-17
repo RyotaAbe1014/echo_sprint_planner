@@ -21,6 +21,8 @@ func NewRouter(uh handler.IUserHandler, sh handler.ISprintHandler) *echo.Echo {
 	// sprint
 	e.POST("/sprint", sh.SprintCreate)
 	e.GET("/sprint_list", sh.SprintList)
+	e.PUT("/sprint", sh.SprintUpdate)
+	e.DELETE("/sprint", sh.SprintDelete)
 
 	return e
 }
