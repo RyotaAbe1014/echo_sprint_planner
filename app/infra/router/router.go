@@ -7,10 +7,15 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func NewRouter(uh handler.IUserHandler, sh handler.ISprintHandler) *echo.Echo {
+func NewRouter(ah handler.IAuthHandler, uh handler.IUserHandler, sh handler.ISprintHandler) *echo.Echo {
 	e := echo.New()
 	// middleware
 	middleware.Middleware(e)
+
+	// token
+	e.POST("/token", ah.TokenCreate)
+	// refresh token
+	e.POST("/refresh", ah.RefreshTokenCreate)
 
 	// user
 	e.POST("/user", uh.UserCreate)

@@ -18,6 +18,8 @@ func main() {
 	sprintService := services.NewSprintService(sprintRepository)
 	sprintHandler := handler.NewSprintHandler(sprintService)
 
-	e := router.NewRouter(userHandler, sprintHandler)
+	authHandler := handler.NewAuthHandler()
+
+	e := router.NewRouter(authHandler, userHandler, sprintHandler)
 	e.Logger.Fatal(e.Start(":8080"))
 }
