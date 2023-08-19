@@ -57,7 +57,7 @@ func (ur *userRepository) GetUserList() ([]*models.User, error) {
 
 func (ur *userRepository) UserFindByEmail(email string) (*models.User, error) {
 	var dbUser db.User
-	if err := ur.db.Select("ID", "Name", "Email", "IsActive", "CreateAt", "UpdateAt").Where("email = ?", email).First(&dbUser).Error; err != nil {
+	if err := ur.db.Select("ID", "Name", "Email", "Password", "IsActive", "CreateAt", "UpdateAt").Where("email = ?", email).First(&dbUser).Error; err != nil {
 		return nil, err
 	}
 
@@ -65,6 +65,7 @@ func (ur *userRepository) UserFindByEmail(email string) (*models.User, error) {
 		ID:       &dbUser.ID,
 		Name:     dbUser.Name,
 		Email:    dbUser.Email,
+		Password: &dbUser.Password,
 		IsActive: dbUser.IsActive,
 		CreateAt: &dbUser.CreateAt,
 		UpdateAt: &dbUser.UpdateAt,
