@@ -2,8 +2,13 @@ package services
 
 import (
 	"echo_sprint_planner/app/domains/repositories"
+	"log"
+	"os"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -48,5 +53,27 @@ func (as *authService) RefreshTokenCreate(refreshToken string) (string, error) {
 
 // func
 func createToken(userID uuid.UUID) (string, error) {
-	return "", nil
+	// クレームの設定
+	claims := jwt.MapClaims{}
+	claims["authorized"] = true
+	claims["user_id"] = userID
+	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() // 有効期限
+
+	// トークンの作成
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	if os.Getenv("GO_ENV") == "dev" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+	// シークレットキーでサイン
+	secret := os.Getenv("SECRET_KEY")
+	tokenString, err := token.SignedString([]byte(secret))
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }
