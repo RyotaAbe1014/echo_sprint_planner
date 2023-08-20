@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func AuthMiddleware(e *echo.Echo) *echo.Echo {
+func AuthMiddleware(eg *echo.Group) *echo.Group {
 	// 環境変数の読み込み（開発環境でのみ）
 	if os.Getenv("GO_ENV") == "dev" {
 		err := godotenv.Load()
@@ -21,6 +21,6 @@ func AuthMiddleware(e *echo.Echo) *echo.Echo {
 	// シークレットキーでサイン
 	secret := os.Getenv("SECRET_KEY")
 	// JWTの設定
-	e.Use(echojwt.JWT([]byte(secret)))
-	return e
+	eg.Use(echojwt.JWT([]byte(secret)))
+	return eg
 }

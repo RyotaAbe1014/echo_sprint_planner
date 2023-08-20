@@ -9,25 +9,33 @@ import (
 
 func NewRouter(ah handler.IAuthHandler, uh handler.IUserHandler, sh handler.ISprintHandler) *echo.Echo {
 	e := echo.New()
-	// middleware
-	middleware.Middleware(e)
-
 	// token
 	e.POST("/token", ah.Login)
 	// refresh token
 	e.POST("/refresh", ah.Refresh)
 
 	// user
-	e.POST("/user", uh.UserCreate)
-	e.GET("/user_list", uh.GetUserList)
-	e.PUT("/user", uh.UserUpdate)
-	e.DELETE("/user", uh.UserDelete)
+	e.POST("/sign_up", uh.UserCreate)
+
+	// user
+	user := e.Group("/user")
+	user.GET("/list", uh.GetUserList)
+	user.PUT("/update", uh.UserUpdate)
+	user.DELETE("/delete", uh.UserDelete)
 
 	// sprint
-	e.POST("/sprint", sh.SprintCreate)
-	e.GET("/sprint_list", sh.SprintList)
-	e.PUT("/sprint", sh.SprintUpdate)
-	e.DELETE("/sprint", sh.SprintDelete)
+	sprint := e.Group("/sprint")
+	sprint.POST("/sprint", sh.SprintCreate)
+	sprint.GET("/sprint_list", sh.SprintList)
+	sprint.PUT("/sprint", sh.SprintUpdate)
+	sprint.DELETE("/sprint", sh.SprintDelete)
+
+	// middleware
+	middleware.Middleware(e)
+
+	// auth middleware
+	middleware.AuthMiddleware(user)
+	middleware.AuthMiddleware(sprint)
 
 	return e
 }

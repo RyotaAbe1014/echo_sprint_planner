@@ -90,7 +90,7 @@ func createAccessToken(userID uuid.UUID) (string, error) {
 	claims["user_id"] = userID
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(utils.GetEnvVar("SECRET")))
+	return token.SignedString([]byte(utils.GetEnvVar("SECRET_KEY")))
 }
 
 // リフレッシュトークン生成
@@ -99,7 +99,7 @@ func createRefreshToken(userID uuid.UUID) (string, error) {
 	claims["user_id"] = userID
 	claims["exp"] = time.Now().Add(24 * 7 * time.Hour).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(utils.GetEnvVar("SECRET")))
+	return token.SignedString([]byte(utils.GetEnvVar("SECRET_KEY")))
 }
 
 // トークン作成
@@ -123,7 +123,7 @@ func createToken(userID uuid.UUID) (models.Token, error) {
 func decodeJWT(tokenString string) (jwt.MapClaims, error) {
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(utils.GetEnvVar("SECRET")), nil
+		return []byte(utils.GetEnvVar("SECRET_KEY")), nil
 	})
 
 	if err != nil {
