@@ -13,9 +13,9 @@ func NewRouter(ah handler.IAuthHandler, uh handler.IUserHandler, sh handler.ISpr
 	middleware.Middleware(e)
 
 	// token
-	e.POST("/token", ah.TokenCreate)
+	e.POST("/token", ah.Login)
 	// refresh token
-	e.POST("/refresh", ah.RefreshTokenCreate)
+	e.POST("/refresh", ah.Refresh)
 
 	// user
 	e.POST("/user", uh.UserCreate)
