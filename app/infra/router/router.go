@@ -25,10 +25,10 @@ func NewRouter(ah handler.IAuthHandler, uh handler.IUserHandler, sh handler.ISpr
 
 	// sprint
 	sprint := e.Group("/sprint")
-	sprint.POST("/sprint", sh.SprintCreate)
-	sprint.GET("/sprint_list", sh.SprintList)
-	sprint.PUT("/sprint", sh.SprintUpdate)
-	sprint.DELETE("/sprint", sh.SprintDelete)
+	sprint.POST("/create", sh.SprintCreate)
+	sprint.GET("/list", sh.SprintList)
+	sprint.PUT("/update", sh.SprintUpdate)
+	sprint.DELETE("/delete", sh.SprintDelete)
 
 	// middleware
 	middleware.Middleware(e)
