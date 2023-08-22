@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"os"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -10,11 +10,8 @@ import (
 func corsMiddleware(e *echo.Echo) *echo.Echo {
 	// CORSの設定
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:3000", os.Getenv("FE_URL")}, // 許可するオリジン
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, // 許可するヘッダー
-			echo.HeaderAccessControlAllowHeaders, echo.HeaderXCSRFToken}, // CSRF対策のためのヘッダー
-		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE"}, // 許可するHTTPメソッド
-		AllowCredentials: false,                                    // cookieを使う場合はtrue
+		AllowOrigins: []string{"http://localhost:3000", "http://localhost:8080"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 	return e
 }
