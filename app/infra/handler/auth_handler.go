@@ -64,5 +64,10 @@ func (ah *authHandler) AuthenticatedUser(c echo.Context) error {
 	// Bearer以降の文字列を取得
 	token := c.Request().Header.Get("Authorization")[7:]
 
-	return c.JSON(http.StatusOK, "success")
+	user, err := ah.as.AuthenticatedUser(token)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, user)
 }
