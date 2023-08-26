@@ -9,30 +9,32 @@ import (
 
 func NewRouter(ah handler.IAuthHandler, uh handler.IUserHandler, sh handler.ISprintHandler) *echo.Echo {
 	e := echo.New()
-	// middleware
 	middleware.Middleware(e)
-	// token
-	e.POST("auth/token/", ah.Login)
+	v1 := e.Group("/api/v1")
+
+	// auth
+	v1.POST("/auth/token", ah.Login)
 	// refresh token
-	e.POST("auth/refresh/", ah.Refresh)
+	v1.POST("/auth/refresh", ah.Refresh)
+	// get me
+	v1.GET("/auth/me", ah.AuthenticatedUser)
+	// user
+	v1.POST("/user/create", uh.UserCreate)
 
 	// user
-	e.POST("user/create/", uh.UserCreate)
-
-	// user
-	user := e.Group("/user")
+	user := v1.Group("/user")
 	middleware.AuthMiddleware(user)
-	user.GET("/list/", uh.GetUserList)
-	user.PUT("/update/", uh.UserUpdate)
-	user.DELETE("/delete/", uh.UserDelete)
+	user.GET("/list", uh.GetUserList)
+	user.PUT("/update", uh.UserUpdate)
+	user.DELETE("/delete", uh.UserDelete)
 
 	// sprint
-	sprint := e.Group("/sprint/")
+	sprint := v1.Group("/sprint")
 	middleware.AuthMiddleware(sprint)
-	sprint.POST("/create/", sh.SprintCreate)
-	sprint.GET("/list/", sh.SprintList)
-	sprint.PUT("/update/", sh.SprintUpdate)
-	sprint.DELETE("/delete/", sh.SprintDelete)
+	sprint.POST("/create", sh.SprintCreate)
+	sprint.GET("/list", sh.SprintList)
+	sprint.PUT("/update", sh.SprintUpdate)
+	sprint.DELETE("/delete", sh.SprintDelete)
 
 	return e
 }

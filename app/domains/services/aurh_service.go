@@ -15,6 +15,7 @@ import (
 type IAuthService interface {
 	Login(email string, password string) (models.Token, error)
 	Refresh(refreshToken string) (models.Token, error)
+	AuthenticatedUser(token string) (models.User, error)
 }
 
 type authService struct {

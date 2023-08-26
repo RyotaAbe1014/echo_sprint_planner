@@ -10,6 +10,7 @@ import (
 type IAuthHandler interface {
 	Login(c echo.Context) error
 	Refresh(c echo.Context) error
+	AuthenticatedUser(c echo.Context) error
 }
 
 type authHandler struct {
@@ -57,4 +58,11 @@ func (ah *authHandler) Refresh(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusOK, token)
+}
+
+func (ah *authHandler) AuthenticatedUser(c echo.Context) error {
+	// Bearer以降の文字列を取得
+	token := c.Request().Header.Get("Authorization")[7:]
+
+	return c.JSON(http.StatusOK, "success")
 }
