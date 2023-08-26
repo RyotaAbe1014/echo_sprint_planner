@@ -5,6 +5,7 @@ import (
 	"echo_sprint_planner/app/domains/repositories"
 	"echo_sprint_planner/app/utils"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -79,6 +80,32 @@ func (as *authService) Refresh(refreshToken string) (models.Token, error) {
 	}
 
 	return token, nil
+}
+
+func (as *authService) AuthenticatedUser(token string) (models.User, error) {
+	// 1. JWT decode
+	// 2. user_idを取得
+	// 3. user_idからuserを取得
+	// 4. userを返却
+
+	// 1. JWT decode
+	claims, err := decodeJWT(token)
+	if err != nil {
+		return models.User{}, err
+	}
+	fmt.Println(claims)
+	// 2. user_idを取得
+	userID, err := uuid.Parse(claims["user_id"].(string))
+	if err != nil {
+		return models.User{}, errors.New("UserID is missing in refresh token")
+	}
+	// 3. user_idからuserを取得
+	user, err := as.ur.UserFindByID(userID)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return *user, nil
 }
 
 // func
