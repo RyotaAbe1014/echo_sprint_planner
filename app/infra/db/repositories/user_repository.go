@@ -73,6 +73,24 @@ func (ur *userRepository) UserFindByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
+func (ur *userRepository) UserFindByID(userID uuid.UUID) (*models.User, error) {
+	var dbUser db.User
+	if err := ur.db.Select("ID", "Name", "Email", "Password", "IsActive", "CreateAt", "UpdateAt").Where("ID = ?", userID).First(&dbUser).Error; err != nil {
+		return nil, err
+	}
+
+	user := &models.User{
+		ID:       &dbUser.ID,
+		Name:     dbUser.Name,
+		Email:    dbUser.Email,
+		Password: &dbUser.Password,
+		IsActive: dbUser.IsActive,
+		CreateAt: &dbUser.CreateAt,
+		UpdateAt: &dbUser.UpdateAt,
+	}
+	return user, nil
+}
+
 func (ur *userRepository) UserUpdate(user *models.User) (err error) {
 	dbUser := &db.User{
 		ID:       *user.ID,

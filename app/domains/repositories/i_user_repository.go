@@ -11,6 +11,7 @@ type IUserRepository interface {
 	UserCreate(user *models.User) (err error)
 	GetUserList() ([]*models.User, error)
 	UserFindByEmail(email string) (*models.User, error)
+	UserFindByID(userID uuid.UUID) (*models.User, error)
 	UserUpdate(user *models.User) (err error)
 	UserDelete(id uuid.UUID) (err error)
 }
@@ -52,6 +53,19 @@ func (mur *MockUserRepository) GetUserList() ([]*models.User, error) {
 
 // UserFindByEmail
 func (mur *MockUserRepository) UserFindByEmail(email string) (*models.User, error) {
+	user := &models.User{
+		ID:       &uuid.UUID{},
+		Name:     "test",
+		Email:    "test@test.com",
+		IsActive: true,
+		CreateAt: &time.Time{},
+		UpdateAt: &time.Time{},
+	}
+	return user, nil
+}
+
+// UserFindByID
+func (mur *MockUserRepository) UserFindByID(userID uuid.UUID) (*models.User, error) {
 	user := &models.User{
 		ID:       &uuid.UUID{},
 		Name:     "test",
