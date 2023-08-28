@@ -84,11 +84,6 @@ func (as *authService) Refresh(refreshToken string) (models.Token, error) {
 
 func (as *authService) AuthenticatedUser(token string) (models.User, error) {
 	// 1. JWT decode
-	// 2. user_idを取得
-	// 3. user_idからuserを取得
-	// 4. userを返却
-
-	// 1. JWT decode
 	claims, err := decodeJWT(token)
 	if err != nil {
 		return models.User{}, err
